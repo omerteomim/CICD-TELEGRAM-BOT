@@ -64,7 +64,7 @@ jobs:
     - name: Get function URL and set webhook
       if: github.ref == 'refs/heads/main'
       run: |
-        FUNCTION_URL=$(terraform output -raw function_url)
+        FUNCTION_URL=$(terraform output -raw function_url 2>/dev/null | tr -d '\n')
         echo "Function URL: $FUNCTION_URL"
         echo "Setting Telegram webhook..."
         
