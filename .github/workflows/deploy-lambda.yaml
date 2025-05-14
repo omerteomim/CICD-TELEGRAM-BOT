@@ -65,8 +65,22 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         FUNCTION_URL=$(terraform output -raw function_url)
-        curl --request POST \
+        echo "Function URL: $FUNCTION_URL"
+        echo "Setting Telegram webhook..."
+        
+        # Add verbose output for debugging
+        WEBHOOK_RESPONSE=$(curl -v --request POST \
           --url "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/setWebhook" \
           --header 'content-type: application/json' \
-          --data "{\"url\": \"$FUNCTION_URL\"}"
-        echo "Function URL: $FUNCTION_URL"
+          --data "{\"url\": \"$FUNCTION_URL\", \"drop_pending_updates\": true}")
+        
+        echo "Webhook response: $WEBHOOK_RESPONSE"
+        
+        # Display setup instructions if automatic setup fails
+        echo "If webhook setup failed, manually set it with:"
+        echo "curl -X POST https://api.telegram.org/bot<YOUR_TOKEN>/setWebhook?url=$FUNCTION_URL"
+        
+        # Verify webhook info
+        echo "Verifying webhook info..."
+        curl --request GET \
+          --url "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/getWebhookInfo"
