@@ -69,10 +69,7 @@ jobs:
         echo "Setting Telegram webhook..."
         
         # Add verbose output for debugging
-        WEBHOOK_RESPONSE=$(curl -v --request POST \
-          --url "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/setWebhook" \
-          --header 'content-type: application/json' \
-          --data "{\"url\": \"$FUNCTION_URL\", \"drop_pending_updates\": true}")
+        WEBHOOK_RESPONSE=$(curl -v "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/setWebhook?url=${FUNCTION_URL}&drop_pending_updates=true")
         
         echo "Webhook response: $WEBHOOK_RESPONSE"
         
