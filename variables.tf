@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "function_name" {
   description = "Name of the Lambda function"
   type        = string
-  default     = "telegram-zoom-bot"
+  default     = "telegram-zoom-bot1"
 }
 
 variable "lambda_zip_path" {
@@ -26,4 +26,9 @@ variable "telegram_chat_id" {
   description = "Your personal Telegram chat ID"
   type        = string
   sensitive   = true
+}
+
+variable "s3_bucket"{
+  description = "Your personal backend s3 bucket"
+  type = string
 }
