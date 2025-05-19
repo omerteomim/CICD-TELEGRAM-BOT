@@ -28,7 +28,4 @@ variable "telegram_chat_id" {
   sensitive   = true
 }
 
-variable "s3_bucket"{
-  description = "Your personal backend s3 bucket"
-  type = string
-}
+

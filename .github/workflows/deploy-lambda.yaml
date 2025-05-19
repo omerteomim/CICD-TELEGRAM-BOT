@@ -41,7 +41,9 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Terraform Init
-      run: terraform init
+      run: |
+       terraform init
+          -backend-config="bucket=${{ secrets.AWS_S3 }}"
       
     - name: Terraform Validate
       run: terraform validate
@@ -52,8 +54,7 @@ jobs:
           -var="telegram_token=${{ secrets.TELEGRAM_TOKEN }}" \
           -var="telegram_chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -var="aws_region=${{ secrets.AWS_REGION }}"
-          -var="s3_bucket=${{ secrets.AWS_S3 }}"
-    
+          
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       run: |
@@ -61,7 +62,6 @@ jobs:
           -var="telegram_token=${{ secrets.TELEGRAM_TOKEN }}" \
           -var="telegram_chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -var="aws_region=${{ secrets.AWS_REGION }}"
-          -var="s3_bucket=${{ secrets.AWS_S3 }}"
     
     - name: Get function URL and set webhook
       if: github.ref == 'refs/heads/main'
