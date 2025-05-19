@@ -8,44 +8,70 @@ This bot automatically detects messages containing Zoom recording links (specifi
 
 ## Architecture
 
-- **AWS Lambda**: Serverless function that processes Telegram webhook events
-- **Terraform**: Infrastructure as Code for consistent AWS resource deployment
+- **AWS Lambda**: Serverless function that processes Telegram webhook events  
+- **Terraform**: Infrastructure as Code for consistent AWS resource deployment  
 - **GitHub Actions**: CI/CD pipeline for automated deployment
 
 ## Prerequisites
 
-- AWS Account
-- Telegram Bot (created via [@BotFather](https://t.me/BotFather))
+- AWS Account  
+- Telegram Bot (created via [@BotFather](https://t.me/BotFather))  
 - GitHub account (for deployment using GitHub Actions)
 
 ## Setup Instructions
 
 ### 1. Create a Telegram Bot
 
-1. Start a chat with [@BotFather](https://t.me/BotFather) on Telegram
-2. Send `/newbot` and follow the instructions to create a new bot
+1. Start a chat with [@BotFather](https://t.me/BotFather) on Telegram  
+2. Send `/newbot` and follow the instructions to create a new bot  
 3. Save the API token provided by BotFather
 
 ### 2. Get Your Telegram Chat ID
 
-1. Start a chat with [@userinfobot](https://t.me/userinfobot) on Telegram
+1. Start a chat with [@userinfobot](https://t.me/userinfobot) on Telegram  
 2. The bot will reply with your chat ID (a number)
 
 ### 3. Set Up GitHub Repository
 
-1. Fork or clone this repository to your GitHub account
+1. Fork or clone this repository to your GitHub account  
 2. Add the following secrets in your GitHub repository settings:
-   - `AWS_ACCESS_KEY_ID`: Your AWS access key
-   - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
-   - `AWS_REGION`: Your preferred AWS region (e.g., `us-east-1`)
-   - `TELEGRAM_TOKEN`: The token provided by BotFather
+   - `AWS_ACCESS_KEY_ID`: Your AWS access key  
+   - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key  
+   - `AWS_REGION`: Your preferred AWS region (e.g., `us-east-1`)  
+   - `TELEGRAM_TOKEN`: The token provided by BotFather  
    - `TELEGRAM_CHAT_ID`: Your personal chat ID
 
-### 4. Deploy the Bot
+### 4. Configure Terraform Backend (Optional but Recommended)
+
+To enable remote state management with Amazon S3, you can configure a backend in your `terraform` block. This allows you to store the Terraform state file in an S3 bucket.
+
+Create or update your `main.tf` to include the following block at the top:
+
+```hcl
+terraform {
+  backend "s3" {
+    bucket         = "omer-state-tf"
+    key            = "telegram_bot_zoom/terraform.tfstate"
+    region         = "us-east-1"
+  }
+}
+```
+
+> 💡 Make sure the S3 bucket exists before running `terraform init`. You can create it manually or use Terraform to provision it from a separate configuration.
+
+Then initialize Terraform with:
+
+```bash
+terraform init
+```
+
+This will configure the backend and migrate your local state to the S3 bucket.
+
+### 5. Deploy the Bot
 
 The bot will be automatically deployed when you push changes to the `main` branch, or you can manually trigger the workflow from the GitHub Actions tab.
 
-### 5. Add the Bot to Telegram Groups
+### 6. Add the Bot to Telegram Groups
 
 Once deployed, add your bot to any Telegram groups where you want to monitor for Zoom links.
 
@@ -53,24 +79,27 @@ Once deployed, add your bot to any Telegram groups where you want to monitor for
 
 ### Prerequisites
 
-- Python 3.9+
-- Terraform
+- Python 3.9+  
+- Terraform  
 - AWS CLI configured with your credentials
 
 ### Setup
 
 1. Clone the repository
+
 ```bash
 git clone <your-repo-url>
 cd <repo-directory>
 ```
 
 2. Install dependencies
+
 ```bash
 pip install requests
 ```
 
 3. Create a `.env` file with your configuration
+
 ```
 TELEGRAM_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
@@ -78,11 +107,13 @@ AWS_REGION=your_aws_region
 ```
 
 4. Test locally (optional)
+
 ```bash
 python lambda_function.py
 ```
 
 5. Deploy manually with Terraform
+
 ```bash
 terraform init
 terraform apply -var="telegram_token=your_bot_token" -var="telegram_chat_id=your_chat_id" -var="aws_region=your_aws_region"
@@ -90,9 +121,9 @@ terraform apply -var="telegram_token=your_bot_token" -var="telegram_chat_id=your
 
 ## Project Structure
 
-- `lambda_function.py`: The Lambda function that processes Telegram webhook events
-- `main.tf`: Terraform configuration for AWS resources
-- `variables.tf`: Variable definitions for Terraform
+- `lambda_function.py`: The Lambda function that processes Telegram webhook events  
+- `main.tf`: Terraform configuration for AWS resources  
+- `variables.tf`: Variable definitions for Terraform  
 - `.github/workflows/deploy.yaml`: GitHub Actions workflow for CI/CD
 
 ## Customization
@@ -127,7 +158,7 @@ curl --request GET --url https://api.telegram.org/bot<YOUR_TOKEN>/getWebhookInfo
 
 ### Lambda Function Logs
 
-Check CloudWatch Logs for detailed Lambda execution logs at:
+Check CloudWatch Logs for detailed Lambda execution logs at:  
 `/aws/lambda/telegram-zoom-bot`
 
 ## Contributing
