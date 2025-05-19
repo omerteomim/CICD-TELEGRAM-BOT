@@ -50,7 +50,7 @@ Create or update your `main.tf` to include the following block at the top:
 ```hcl
 terraform {
   backend "s3" {
-    bucket         = "omer-state-tf"
+    bucket         = "<your_bucket_name>"
     key            = "telegram_bot_zoom/terraform.tfstate"
     region         = "us-east-1"
   }
