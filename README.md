@@ -1,7 +1,7 @@
 # Telegram Zoom Link Forwarder
 
 A simple Telegram bot that monitors messages for Zoom recording links and forwards them to your personal chat. The bot is deployed as an AWS Lambda function using Terraform and GitHub Actions.
-
+![Image Description](telegram_diagram.jpg)
 ## Overview
 
 This bot automatically detects messages containing Zoom recording links (specifically from `admin-ort-org-il.zoom.us/rec/share/`) in any chat where the bot is present, and forwards these links to your personal Telegram chat. This is useful for keeping track of important Zoom recordings without having to manually check all your group chats.
